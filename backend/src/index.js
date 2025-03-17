@@ -5,6 +5,7 @@ import cookieParser from "cookie-parser";
 import {connectDB} from "./lib/db.js";
 import authRoutes from "./routes/auth.route.js";
 import messageRoutes from "./routes/message.route.js";
+import chatroomRoutes from "./routes/chatroom.route.js"
 
 import {app, server} from "./lib/socket.js";
 
@@ -17,6 +18,7 @@ app.use(cookieParser());
 
 app.use("/api/auth", authRoutes);
 app.use("/api/messages", messageRoutes);
+app.use("/api/chatrooms", chatroomRoutes)
 
 server.listen(PORT, () => {
     console.log("server running on port " + PORT);
