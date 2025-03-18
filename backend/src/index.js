@@ -1,4 +1,5 @@
 import express from "express";
+import cors from "cors";
 import dotenv from "dotenv";
 import cookieParser from "cookie-parser";
 
@@ -12,6 +13,13 @@ import {app, server} from "./lib/socket.js";
 dotenv.config();
 
 const PORT = process.env.PORT;
+
+app.use(
+    cors({
+        origin: "https://dreamqin68.github.io",
+        credentials: true
+    })
+)
 
 app.use(express.json());
 app.use(cookieParser());

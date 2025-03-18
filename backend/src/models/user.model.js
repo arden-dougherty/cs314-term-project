@@ -20,6 +20,10 @@ const userSchema = new mongoose.Schema(
             type: String,
             default: "",
         },
+        color: {
+            type: String,
+            default: "",
+        },
     },
     { timestamps: true }
 );
