@@ -4,6 +4,8 @@ import Chatroom from "../models/chatroom.model.js";
 import {getReceiverSocketId, io} from "../lib/socket.js";
 
 export const getUserList = async (req, res) => {
+    console.log("getUserList called");
+    
     try {
         const loggedInUserId = req.user._id;
         const filteredUsers = await User.find({_id: {$ne:loggedInUserId}}).select("-password");

@@ -7,6 +7,13 @@ export const createChatroom = async (req, res) => {
         const thisUserId = req.user._id;
         const {id: otherUserId} = req.params;
 
+        const creatorExists = await User.findById(thisUserId);
+        const memberExists = await User.findById(otherUserId);
+
+        if (!creatorExists || !memberExists) {
+            return res.status(404).json({message: "Invalid user(s)"});
+        }
+
         const existingChatrooms = await Chatroom.find({
             $or:[
                 {creatorId:thisUserId, memberId:otherUserId},
