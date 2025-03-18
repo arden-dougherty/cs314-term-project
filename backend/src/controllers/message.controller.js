@@ -1,5 +1,6 @@
-import User from "../models/user.model.js"
-import Message from "../models/message.model.js"
+import User from "../models/user.model.js";
+import Message from "../models/message.model.js";
+import Chatroom from "../models/chatroom.model.js";
 import {getReceiverSocketId, io} from "../lib/socket.js";
 
 export const getUserList = async (req, res) => {
@@ -38,6 +39,17 @@ export const sendMessage = async (req, res) => {
         const {text} = req.body;
         const {id: receiverId} = req.params;
         const senderId = req.user._id;
+
+        const existingChatrooms = await Chatroom.find({
+            $or:[
+                {creatorId:senderId, memberId:receiverId},
+                {creatorId:receiverId, memberId:senderId}
+            ]
+        })
+
+        if (existingChatrooms.length < 1) {
+            return res.status(400).json({message: "No chatrooms exist with these users"});
+        }
 
         const newMessage = new Message({
             senderId,
