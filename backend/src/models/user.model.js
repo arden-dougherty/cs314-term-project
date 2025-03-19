@@ -24,6 +24,10 @@ const userSchema = new mongoose.Schema(
             type: String,
             default: "",
         },
+        profileSetup: {
+            type: Boolean,
+            default: false,
+        }
     },
     { timestamps: true }
 );

@@ -97,6 +97,7 @@ export const login = async (req, res) => {
                 firstName: user.firstName,
                 lastName: user.lastName,
                 color: user.color,
+                profileSetup: user.profileSetup
             }
         });
     } catch (error) {
@@ -125,7 +126,7 @@ export const updateName = async(req, res) => {
             return res.status(400).json({message: "First and last name are required"});
         }
 
-        const updatedUser = await User.findByIdAndUpdate(userId, {firstName:firstName, lastName:lastName, color:color}, {new:true});
+        const updatedUser = await User.findByIdAndUpdate(userId, {firstName:firstName, lastName:lastName, color:color, profileSetup: true}, {new:true});
 
         if (!updatedUser) {
             return res.status(400).json({message: "Could not find user"});
@@ -133,7 +134,7 @@ export const updateName = async(req, res) => {
 
         console.log("User profile updated:", req.body);
         //console.log(req.user);
-        //console.log(updatedUser);
+        console.log(updatedUser);
         res.status(200).json({
             user: {
                 id: updatedUser._id,
@@ -141,6 +142,7 @@ export const updateName = async(req, res) => {
                 firstName: updatedUser.firstName,
                 lastName: updatedUser.lastName,
                 color: updatedUser.color,
+                profileSetup: updatedUser.profileSetup
             }
         });
     } catch (error) {
@@ -154,7 +156,7 @@ export const checkAuth = async (req, res) => {
         const user = req.user;
 
         const foundUser = await User.findById(user._id);
-
+    
         if (!foundUser) {
             return res.status(404).json({message: "User not found"});
         }
@@ -167,6 +169,7 @@ export const checkAuth = async (req, res) => {
                 firstName: user.firstName,
                 lastName: user.lastName,
                 color: user.color,
+                profileSetup: user.profileSetup
             }
         });
     } catch (error) {

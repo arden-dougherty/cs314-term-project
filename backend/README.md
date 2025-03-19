@@ -38,6 +38,8 @@ This is a backend for an instant messaging application built using the MERN stac
 
   By default, the server will run at http://localhost:8747.
 
+  Go to the frontend at https://dreamqin68.github.io/frontend-project/.
+
 **Testing**:
 
   ```bash
