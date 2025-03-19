@@ -8,6 +8,6 @@ const router = express.Router();
 router.get("/all-contacts", protectRoute, getContactList);
 router.get("/get-contacts-for-list", protectRoute, getContactList);
 router.post("/search", protectRoute, contactSearch);
-router.delete("/delete-dm/:dmId", deleteMessages);
+router.delete("/delete-dm/:dmId", protectRoute, deleteMessages);
 
 export default router;

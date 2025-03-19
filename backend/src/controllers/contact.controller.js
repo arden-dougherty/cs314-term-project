@@ -5,12 +5,15 @@ export const getContactList = async (req, res) => {
         const loggedInUserId = req.user._id;
         const filteredUsers = await User.find({_id: {$ne:loggedInUserId}}).select("-password");
 
+        /*
         const contacts = filteredUsers.map((user) => ({
             label: `${user.firstName} ${user.lastName}`,
             value: user._id,
         }));
+        */
         
-        res.status(200).json({contacts: contacts})
+        console.log(filteredUsers);
+        res.status(200).json({contacts: filteredUsers})
     } catch (error) {
         console.log("Error in getUserList:", error.message);
         res.status(500).json({error: "Internal server error"});
