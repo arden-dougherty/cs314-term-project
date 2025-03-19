@@ -88,3 +88,21 @@ export const deleteChatroom = async (req, res) => {
         res.status(500).json({message: "Internal server error"});
     }
 };
+
+export const getChatroomList = async (req, res) => {
+    try {
+        const loggedInUserId = req.user._id;
+
+        const chatrooms = await Chatroom.find({
+            $or:[
+                {creatorId:loggedInUserId},
+                {memberId:loggedInUserId}
+            ]
+        })
+
+        res.status(200).json(chatrooms);
+    } catch (error) {
+        console.log("Error in getChatroomList:", error.message);
+        res.status(500).json({error: "Internal server error"});
+    }
+};

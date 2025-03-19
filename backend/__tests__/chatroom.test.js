@@ -144,3 +144,43 @@ describe ("DELETE /api/chatrooms/delete/:id", () => {
         expect(res.status).toBe(400);
     })
 });
+
+describe ("GET /api/chatrooms/list", () => {
+    beforeAll(async () => {
+        await mongoose.connect(process.env.MONGO_URL);
+    });
+
+    afterAll(async () => {
+        await mongoose.disconnect();
+    });
+
+    afterEach(async () => {
+        await User.deleteMany({});
+        await Chatroom.deleteMany({});
+    });
+
+        it ("should return 200 and list of chatrooms if user id is valid", async () => {
+            const email1 = "test@email.com";
+            const password1 = "123";
+            const email2 = "test2@email.com";
+            const password2 = "456";
+            const email3 = "test3@email.com";
+            const password3 = "789";
+        
+            await User.create({ email: email1, password: password1});
+            await User.create({ email: email2, password: password2});
+            await User.create({ email: email3, password: password3});
+            const user1 = await User.findOne({email: email1});
+            const user2 = await User.findOne({email: email2});
+            const user3 = await User.findOne({email: email3});
+
+            await Chatroom.create({ creatorId: user1._id, memberId:user2._id});
+            await Chatroom.create({ creatorId: user3._id, memberId:user1._id});
+            await Chatroom.create({ creatorId: user3._id, memberId:user2._id});
+
+            const res = await request(app).get("/api/chatrooms/list/").send({user:user1});
+            expect(res.status).toBe(200);
+            const chatrooms = res.body;
+            expect(chatrooms.length).toBe(2);
+        });
+});

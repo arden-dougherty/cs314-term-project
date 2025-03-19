@@ -42,6 +42,13 @@ export const sendMessage = async (req, res) => {
         const {id: receiverId} = req.params;
         const senderId = req.user._id;
 
+        const sender = await User.findById(senderId);
+        const receiver = await User.findById(receiverId);
+
+        if (!sender || !receiver) {
+            return res.status(400).json({message: "Invalid user(s)"});
+        };
+
         const existingChatrooms = await Chatroom.find({
             $or:[
                 {creatorId:senderId, memberId:receiverId},
