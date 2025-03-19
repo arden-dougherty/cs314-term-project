@@ -12,6 +12,9 @@ import contactRoutes from "./routes/contact.route.js";
 import http from "http";
 import { Server } from "socket.io";
 
+import User from "./models/user.model.js";
+import Message from "./models/message.model.js";
+
 //import {app, server} from "./lib/socket.js";
 
 dotenv.config();
@@ -79,6 +82,65 @@ io.on("connection", (socket) => {
         console.log(`Client disconnected: socketId=${socket.id}, user="${userId}"`);
         delete userSocketMap[userId];
     });
+
+    socket.on("sendMessage", async (req, res) => {
+        try {
+            const content = req.content;
+            const recipientId = req.recipient;
+            const senderId = req.sender;
+    
+            console.log(req);
+            console.log(senderId);
+            console.log(recipientId);
+
+            const sender = await User.findById(senderId);
+            const recipient = await User.findById(recipientId);
+    
+            if (!sender || !recipient) {
+                console.log("invalid users")
+                return //res.status(400).json({message: "Invalid user(s)"});
+            };
+    
+            /*
+            const existingChatrooms = await Chatroom.find({
+                $or:[
+                    {creatorId:senderId, memberId:receiverId},
+                    {creatorId:receiverId, memberId:senderId}
+                ]
+            })
+    
+            if (existingChatrooms.length < 1) {
+                return res.status(400).json({message: "No chatrooms exist with these users"});
+            }
+            */
+    
+            const newMessage = new Message({
+                sender: senderId,
+                recipient: recipientId,
+                content: content
+            });
+    
+            await newMessage.save();
+
+            console.log("message stored");
+    
+            const receiverSocketId = userSocketMap[recipientId];
+            const senderSocketId = userSocketMap[senderId];
+            if (receiverSocketId) {
+                console.log("sending to recipient")
+                io.to(receiverSocketId).emit("recieveMessage", newMessage);
+            }
+            if (senderSocketId) {
+                console.log("sending to sender")
+                io.to(senderSocketId).emit("recieveMessage", newMessage);
+            }
+    
+            //res.status(201).json(newMessage)
+        } catch (error) {
+            console.log("Error in sendMessage controller:", error.message);
+            //res.status(500).json({error: "Internal server error"});
+        }
+    })
 });
 
 /*

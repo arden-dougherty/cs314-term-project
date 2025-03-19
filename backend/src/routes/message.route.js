@@ -12,6 +12,5 @@ router.get("/:id", protectRoute, getMessages);
 router.post("/send/:id", protectRoute, sendMessage);
 
 router.post("/get-messages", protectRoute, getMessagesWithUser);
-router.post("/sendMessage", protectRoute, chatHandler);
 
 export default router;
