@@ -5,8 +5,8 @@ import { getContactList, contactSearch, deleteMessages } from "../controllers/co
 
 const router = express.Router();
 
-router.get("/all-contacts", protectRoute, getUserList);
-router.get("/get-contacts-for-list", protectRoute, getUserList);
+router.get("/all-contacts", protectRoute, getContactList);
+router.get("/get-contacts-for-list", protectRoute, getContactList);
 router.post("/search", protectRoute, contactSearch);
 router.delete("/delete-dm/:dmId", deleteMessages);
 
