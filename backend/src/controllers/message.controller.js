@@ -1,7 +1,7 @@
 import User from "../models/user.model.js";
 import Message from "../models/message.model.js";
 import Chatroom from "../models/chatroom.model.js";
-import {getReceiverSocketId, io} from "../lib/socket.js";
+import {getReceiverSocketId, io} from "../index.js";
 
 export const getUserList = async (req, res) => {
     console.log("getUserList called");
@@ -102,3 +102,7 @@ export const getMessagesWithUser = async (req, res) => {
         res.status(500).json({error: "Internal server error"});
     }
 };
+
+export const chatHandler = async (req, res) => {
+    console.log("chat handler called");
+}

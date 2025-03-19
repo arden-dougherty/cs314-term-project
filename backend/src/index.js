@@ -9,26 +9,39 @@ import messageRoutes from "./routes/message.route.js";
 import chatroomRoutes from "./routes/chatroom.route.js";
 import contactRoutes from "./routes/contact.route.js";
 
-import {app, server} from "./lib/socket.js";
+import http from "http";
+import { Server } from "socket.io";
+
+//import {app, server} from "./lib/socket.js";
 
 dotenv.config();
 
 const PORT = process.env.PORT;
 
-app.use(
-    cors({
-        origin: process.env.ORIGIN,
-        credentials: true
-    })
-)
-
+const app = express();
+app.use(cors({
+    origin: process.env.ORIGIN,
+    credentials: true
+}));
 app.use(express.json());
 app.use(cookieParser());
+
+const userSocketMap = {};
+
+/*
+const chatHandler = async (req, res) => {
+    console.log("chat handler called");
+}
+*/
+
 
 app.use("/api/auth", authRoutes);
 app.use("/api/messages", messageRoutes);
 app.use("/api/chatrooms", chatroomRoutes)
 app.use("/api/contacts", contactRoutes);
+
+//app.post("/api/messages", chatHandler);
+const server = http.createServer(app);
 
 if (!process.env.JEST_WORKER_ID) {
     server.listen(PORT, () => {
@@ -37,4 +50,62 @@ if (!process.env.JEST_WORKER_ID) {
     });
 };
 
-export { app };
+/*
+server = app.listen(PORT, () => {
+    console.log("server running on port " + PORT);
+    connectDB();
+})
+*/
+
+const io = new Server(server, {
+    cors: {
+        origin: process.env.ORIGIN,
+        credentials: true
+    }
+});
+
+
+
+export function getReceiverSocketId(userId) {
+    return userSocketMap[userId];
+};
+
+io.on("connection", (socket) => {
+    const userId = socket.handshake.query.userId;
+    console.log(`Client connected: socketId${socket.id}, user="${userId}"`);
+    userSocketMap[userId] = socket.id;
+
+    socket.on("disconnect", () => {
+        console.log(`Client disconnected: socketId=${socket.id}, user="${userId}"`);
+        delete userSocketMap[userId];
+    });
+});
+
+/*
+dotenv.config();
+
+const PORT = process.env.PORT;
+*/
+/*
+app.use(
+    cors({
+        origin: process.env.ORIGIN,
+        credentials: true
+    })
+)
+*/
+
+/*
+
+*/
+
+/*
+if (!process.env.JEST_WORKER_ID) {
+    server.listen(PORT, () => {
+        console.log("server running on port " + PORT);
+        connectDB();
+    });
+};
+*/
+
+export { app, io };
