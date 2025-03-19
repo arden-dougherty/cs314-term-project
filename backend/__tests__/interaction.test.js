@@ -96,12 +96,12 @@ describe ("Interaction test: signup, create chat room, and send message", () => 
 
         let res = await request(app).post("/api/messages/send/" + user2._id).send({user:user1});
         expect(res.status).toBe(201);
-        let message = await Message.findOne({senderId: user1._id, receiverId: user2._id});
+        let message = await Message.findOne({sender: user1._id, recipient: user2._id});
         expect(message).not.toBe(null);
 
         res = await request(app).post("/api/messages/send/" + user1._id).send({user:user2});
         expect(res.status).toBe(201);
-        message = await Message.findOne({senderId: user2._id, receiverId: user1._id});
+        message = await Message.findOne({sender: user2._id, recipient: user1._id});
         expect(message).not.toBe(null);
     })
 });

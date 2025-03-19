@@ -24,8 +24,8 @@ export const getMessages = async (req, res) => {
         
         const messages = await Message.find({
             $or:[
-                {senderId:thisUserId, receiverId:otherUserId},
-                {senderId:otherUserId, receiverId:thisUserId}
+                {sender:thisUserId, recipient:otherUserId},
+                {sender:otherUserId, recipient:thisUserId}
             ]
         })
 
@@ -61,9 +61,9 @@ export const sendMessage = async (req, res) => {
         }
 
         const newMessage = new Message({
-            senderId,
-            receiverId,
-            text
+            sender: senderId,
+            recipient: receiverId,
+            content: text
         });
 
         await newMessage.save();
@@ -83,7 +83,10 @@ export const sendMessage = async (req, res) => {
 export const getMessagesWithUser = async (req, res) => {
     try {
         const senderId = req.user._id;
-        const receiverId = req.id;
+        const receiverId = req.body.id;
+
+        console.log(senderId);
+        console.log(receiverId);
 
         const messages = await Message.find({
             $or:[
