@@ -1,6 +1,5 @@
 import express from "express";
 import {protectRoute} from "../middleware/auth.middleware.js"
-import { getUserList } from "../controllers/message.controller.js";
 import { getContactList, contactSearch, deleteMessages } from "../controllers/contact.controller.js";
 
 const router = express.Router();

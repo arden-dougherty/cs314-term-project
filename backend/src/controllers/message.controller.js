@@ -87,11 +87,12 @@ export const getMessagesWithUser = async (req, res) => {
 
         const messages = await Message.find({
             $or:[
-                {senderId:senderId, receiverId:receiverId},
-                {senderId:receiverId, receiverId:senderId}
+                {sender:senderId, recipient:receiverId},
+                {sender:receiverId, recipient:senderId}
             ]
         })
 
+        console.log(messages);
         res.status(200).json({messages: messages});
     } catch (error) {
         console.log("Error in getMessagesWithUser controller:", error.message);
