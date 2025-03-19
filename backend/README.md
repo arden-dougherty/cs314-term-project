@@ -9,7 +9,6 @@ This is a backend for an instant messaging application built using the MERN stac
 - [Installation](#installation)
 - [Usage](#usage)
 - [Available Endpoints](#available-endpoints)
-  - [POST `/api/auth/signup`](#post-apiauthsignup)
 
 ## Prerequisites
 
