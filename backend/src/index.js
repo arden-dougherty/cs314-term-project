@@ -117,7 +117,8 @@ io.on("connection", (socket) => {
             const newMessage = new Message({
                 sender: senderId,
                 recipient: recipientId,
-                content: content
+                content: content,
+                timestamp: Date.now()
             });
     
             await newMessage.save();
@@ -127,12 +128,12 @@ io.on("connection", (socket) => {
             const receiverSocketId = userSocketMap[recipientId];
             const senderSocketId = userSocketMap[senderId];
             if (receiverSocketId) {
-                console.log("sending to recipient")
-                io.to(receiverSocketId).emit("recieveMessage", newMessage);
+                console.log("emitting to recipient")
+                io.to(receiverSocketId).emit("receiveMessage", newMessage);
             }
             if (senderSocketId) {
-                console.log("sending to sender")
-                io.to(senderSocketId).emit("recieveMessage", newMessage);
+                console.log("emitting to sender")
+                io.to(senderSocketId).emit("receiveMessage", newMessage);
             }
     
             //res.status(201).json(newMessage)
